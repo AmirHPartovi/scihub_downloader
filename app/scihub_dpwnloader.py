@@ -1,10 +1,7 @@
-import os
+
 import requests
 from bs4 import BeautifulSoup
-import time
-import random
 import re
-import json
 import webbrowser  # Add this import at the top with other imports
 
 ــall__ = ["get_pdf_url", "get_paper_title", "sanitize_filename", "download_pdf"]

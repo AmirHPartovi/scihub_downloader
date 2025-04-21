@@ -1,5 +1,5 @@
 import requests
-from bs4 import BeautifulSoup
+
 
 __all__ = ["get_list_of_papers"]
 DBLP_DOMAINS = [
