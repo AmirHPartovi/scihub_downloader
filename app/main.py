@@ -1,6 +1,6 @@
 import streamlit as st
 from find_papers import get_list_of_papers
-from scihub_dpwnloader import download_pdf
+from scihub_downloader import download_pdf
 
 
 def main():
