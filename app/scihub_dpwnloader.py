@@ -5,7 +5,9 @@ import time
 import random
 import re
 import json
+import webbrowser  # Add this import at the top with other imports
 
+ــall__ = ["get_pdf_url", "get_paper_title", "sanitize_filename", "download_pdf"]
 # Update Sci-Hub domains
 SCI_HUB_DOMAINS = [
     "https://sci-hub.se/",
@@ -14,22 +16,12 @@ SCI_HUB_DOMAINS = [
     "https://sci-hub.wf/",
 ]
 
-# Create a folder for downloads
-DOWNLOAD_DIR = "Downloaded_Papers"
-os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
 # Log files
 SUCCESS_LOG = "success.log"
 FAILED_LOG = "failed.log"
 
-# Read DOIs from file
-DOI_FILE = "./dois/triangulation.txt"
-if not os.path.exists(DOI_FILE):
-    print(f"❌ DOI file not found: {DOI_FILE}")
-    exit(1)
 
-with open(DOI_FILE, "r") as f:
-    dois = [line.strip() for line in f.readlines() if line.strip()]
 
 
 def get_pdf_url(doi):
@@ -87,37 +79,17 @@ def download_pdf(doi):
     """Download PDF for a given DOI"""
     pdf_url = get_pdf_url(doi)
     if not pdf_url:
-        print(f"🚫 PDF not found for DOI: {doi}")
-        with open(FAILED_LOG, "a") as f:
-            f.write(doi + "\n")
-        return
+        return False
 
-    title = get_paper_title(doi)
-    safe_title = sanitize_filename(title)
-    filename = f"{safe_title}.pdf"
-    filepath = os.path.join(DOWNLOAD_DIR, filename)
-
+    # Open PDF URL directly in browser
     try:
-        print(f"⬇️ Downloading: {filename}")
-        pdf_response = requests.get(pdf_url, timeout=15)
-        pdf_response.raise_for_status()
-        with open(filepath, "wb") as f:
-            f.write(pdf_response.content)
-
-        # Log success
-        with open(SUCCESS_LOG, "a") as f:
-            f.write(f"{doi} -> {filename}\n")
-
-        print(f"✅ Saved: {filepath}")
-    except requests.RequestException as e:
-        print(f"❌ Download failed for {doi}: {e}")
+        print(f"🌐 Opening PDF in browser: {pdf_url}")
+        webbrowser.open_new_tab(pdf_url)
+        return pdf_url
+    except Exception as e:
+        print(f"❌ Failed to open PDF in browser: {e}")
         with open(FAILED_LOG, "a") as f:
-            f.write(doi + "\n")
+            f.write(f"{doi} (browser open failed) -> {str(e)}\n")
+        return None
 
 
-# Download all DOIs
-for doi in dois:
-    download_pdf(doi)
-    time.sleep(random.uniform(3, 7))  # Random delay
-
-print("\n🎉 Process complete!")
