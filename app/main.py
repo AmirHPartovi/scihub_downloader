@@ -7,7 +7,7 @@ def main():
     st.set_page_config(page_title="DBLP Paper Searcher",
                        page_icon=":book:", layout="wide")
     with st.container():
-        st.sidebar.title("Search history")
+        # st.sidebar.title("Search history")
         st.title("DBLP :handshake: SciHub")
         st.subheader("we are not communists, but science must be free ...")
 
